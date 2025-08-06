@@ -1,0 +1,7 @@
+.openrouteapikey
+__pycache__/
+output/
+data/
+tmp/
+/*.json
+/*.csv
