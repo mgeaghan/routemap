@@ -7,6 +7,7 @@ import math
 import argparse
 import glob
 import pandas as pd
+import sys
 
 
 # Define constants:
@@ -78,6 +79,10 @@ def get_route(start_lon, start_lat, end_lon, end_lat, apikey):
 
     with open(datafile, 'r') as f:
         data = json.load(f)
+
+    if 'features' not in data:
+        os.remove(datafile)
+        sys.exit(1)
 
     route_coords = data['features'][0]['geometry']['coordinates']
     route_x_coords = [c[0] for c in route_coords]
