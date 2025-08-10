@@ -237,7 +237,7 @@ def read_input(input_csv):
     return df.T.to_dict()
 
 
-def main(input, prefix, zoom, colours, route_api_key, tileserver):
+def main(input, prefix, zoom, colours, linewidth, linealpha, route_api_key, tileserver):
     # Define start and end latitudes and longitudes for each route
     with open(input, 'r') as f:
         routes = read_input(input)
@@ -314,7 +314,7 @@ def main(input, prefix, zoom, colours, route_api_key, tileserver):
     i = 0
     for route_name, coords in route_coords.items():
         # Plot route
-        ax.plot(coords['x'], coords['y'], color=colours[i % len(colours)], linestyle='-', linewidth=1, alpha=1)
+        ax.plot(coords['x'], coords['y'], color=colours[i % len(colours)], linestyle='-', linewidth=linewidth, alpha=linealpha)
         i += 1
     # ax.set_axis_off()
     ax.set_xticks([])
@@ -384,6 +384,18 @@ if __name__ == '__main__':
         type=str
     )
     parser.add_argument(
+        '--linewidth',
+        help='Line width for plotting route. Default: 1',
+        default=1,
+        type=float
+    )
+    parser.add_argument(
+        '--linealpha',
+        help='Line alpha for plotting route. Default: 1',
+        default=1,
+        type=float
+    )
+    parser.add_argument(
         '--tileserver',
         help='Base URL of an OSM tile server. Default is `http://localhost:8080/tile` (assumes you are running your own). Not used if all tiles are already present.',
         default='http://localhost:8080/tile',
@@ -403,7 +415,10 @@ if __name__ == '__main__':
         colours = f.readlines()
         colours = [str(c).strip() for c in colours]
 
+    assert args.linewidth > 0, f'Error: invalid line width supplied: {args.linewidth}'
+    assert args.linealpha >= 0 and args.linealpha <= 1, f'Error: invalid alpha supplied: {args.linealpha}'
+
     with open(route_api_key_file, 'r') as f:
         route_api_key = f.readline().strip()
 
-    main(input=args.input, prefix=map_prefix, zoom=args.zoom, colours=colours, route_api_key=route_api_key, tileserver=args.tileserver)
+    main(input=args.input, prefix=map_prefix, zoom=args.zoom, colours=colours, linewidth=args.linewidth, linealpha=args.linealpha, route_api_key=route_api_key, tileserver=args.tileserver)
