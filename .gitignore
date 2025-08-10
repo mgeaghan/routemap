@@ -5,3 +5,4 @@ data/
 tmp/
 /*.json
 /*.csv
+/data_backup/
